@@ -18,7 +18,7 @@ const AuthForm = () => {
     console.log(enteredEmail);
     console.log(enteredPassword);
     //const url = "http://localhost:3001/api/v1/useLogin";
-    const url = "http://posapi.pinga.us/api/v1/useLogin";
+    const url = "https://posapi.pinga.us/api/v1/useLogin";
     setIsLoading(true);
     fetch(url, {
       method: "POST",

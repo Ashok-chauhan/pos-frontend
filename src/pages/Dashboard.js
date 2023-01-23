@@ -32,7 +32,7 @@ const Dashboard = () => {
   const saleObj = {};
   const getDashboardData = () => {
     setIsLoading(true);
-    postData("http://posapi.pinga.us/api/v1/salebyDate", {
+    postData("https://posapi.pinga.us/api/v1/salebyDate", {
       date: pickdate,
     }).then((data) => {
       //setSale(data);

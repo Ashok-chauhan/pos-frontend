@@ -12,7 +12,7 @@ const CategoryItems = (props) => {
     props.onSave(e.target.textContent);
   };
   const getcat = useCallback(() => {
-    const url = "http://posapi.pinga.us/api/v1/category";
+    const url = "https://posapi.pinga.us/api/v1/category";
     setIsLoading(true);
     fetch(url, {
       method: "GET",

@@ -14,7 +14,7 @@ const Sell = () => {
 
   //const getcat = useCallback(() => {
   const getcat = () => {
-    const url = "http://posapi.pinga.us/api/v1/category";
+    const url = "https://posapi.pinga.us/api/v1/category";
     setIsLoading(true);
     fetch(url, {
       method: "GET",
@@ -82,7 +82,7 @@ const Sell = () => {
       discount: discount,
     };
     setIsLoadingForm(true);
-    postData("http://posapi.pinga.us/api/v1/bill", soldItem).then((data) => {
+    postData("https://posapi.pinga.us/api/v1/bill", soldItem).then((data) => {
       setIsLoadingForm(false);
       console.log(data); // JSON data parsed by `data.json()` call
     });
