@@ -1,6 +1,10 @@
 .App {
   text-align: center;
 }
+body {
+  /* background-color: #000; */
+  background-color: #e5dbf6;
+}
 
 .App-logo {
   height: 40vmin;
@@ -12,9 +16,12 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.header {
+  background-color: #7952b3;
+  color: #fff;
+}
 .App-header {
-  background-color: #282c34;
+  background-color: #7952b3;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +42,44 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* .card-header {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: #7952b3;
+  border-bottom: 1px solid#7952B3;
+  color: #fff;
+} */
+
+.list-group {
+  max-height: relative;
+  max-width: 150px;
+  /* margin-bottom: 10px; */
+
+  overflow: hidden;
+  overflow-y: scroll;
+
+  /* overflow: scroll; */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* .card {
+  background-color: #e5dbf6;
+  border-color: #fff;
+} */
+.product {
+  width: 300px;
+  height: 150px;
+}
+.category {
+  width: 150px;
+  height: 80px;
+}
+/* background-color: #8064a2 !important; */
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:active,
+.btn-secondary:visited {
+  background-color: #7952b3 !important;
 }

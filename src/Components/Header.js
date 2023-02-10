@@ -2,12 +2,17 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import AuthContext from "../store/auth-context";
+import "../App.css";
 
 import {
   FaLaptopHouse,
   FaShoppingCart,
   FaSignOutAlt,
   FaSignInAlt,
+  FaListUl,
+  FaHandsHelping,
+  FaIdCard,
+  FaBoxOpen,
 } from "react-icons/fa";
 const Header = () => {
   const authCtx = useContext(AuthContext);
@@ -15,11 +20,11 @@ const Header = () => {
   const isLoggedIn = sessionStorage.getItem("sessLoggedIn");
   //bg-body-tertiary
   return (
-    <nav className="navbar navbar-expand-lg bg-light">
+    <nav className="navbar navbar-expand-lg header">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
+        <Link className="navbar-brand header" to="/">
           POS@PINGA.US
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -35,7 +40,7 @@ const Header = () => {
           <ul className="navbar-nav">
             {isLoggedIn && (
               <li className="nav-item">
-                <Link className="nav-link" to="/dashboard">
+                <Link className="nav-link header" to="/dashboard">
                   <FaLaptopHouse size="2em" /> Dashboard
                 </Link>
               </li>
@@ -43,22 +48,64 @@ const Header = () => {
 
             {!isLoggedIn && (
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link className="nav-link header" to="/login">
                   <FaSignInAlt size="2em" /> Login
                 </Link>
               </li>
             )}
-            {isLoggedIn && (
+
+            {!isLoggedIn && (
               <li className="nav-item">
-                <Link className="nav-link" to="/sell">
+                <Link className="nav-link header" to="/register">
+                  <FaSignInAlt size="2em" /> Registration
+                </Link>
+              </li>
+            )}
+
+            {/* {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link header" to="/sell">
                   <FaShoppingCart size="2em" />
                   Sell
                 </Link>
               </li>
-            )}
+            )} */}
+
             {isLoggedIn && (
               <li className="nav-item">
-                <Link className="nav-link" to="/logout">
+                <Link className="nav-link header" to="/sales">
+                  <FaShoppingCart size="2em" /> Sales
+                </Link>
+              </li>
+            )}
+
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link header" to="/category">
+                  <FaListUl size="2em" /> Category
+                </Link>
+              </li>
+            )}
+
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link header" to="/product">
+                  <FaBoxOpen size="2em" /> Products
+                </Link>
+              </li>
+            )}
+
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link header" to="/customer/add">
+                  <FaIdCard size="2em" /> Add customer
+                </Link>
+              </li>
+            )}
+
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link className="nav-link header" to="/logout">
                   <FaSignOutAlt size="2em" /> Logout
                 </Link>
               </li>

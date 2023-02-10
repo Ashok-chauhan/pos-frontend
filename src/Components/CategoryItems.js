@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import * as CONFIG from "../utils/Configuration";
 const CategoryItems = (props) => {
   const [category, setCategory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -12,7 +13,7 @@ const CategoryItems = (props) => {
     props.onSave(e.target.textContent);
   };
   const getcat = useCallback(() => {
-    const url = "https://posapi.pinga.us/api/v1/category";
+    const url = CONFIG.URL + "/category";
     setIsLoading(true);
     fetch(url, {
       method: "GET",
@@ -60,7 +61,12 @@ const CategoryItems = (props) => {
       //   {cat.name}
       // </div>
       <>
-        <div className="bg-info m-2 p-2 " id={cat._id} onClick={clickHandler}>
+        <div
+          className="bg-info m-2 p-2 "
+          id={cat._id}
+          key={cat._id}
+          onClick={clickHandler}
+        >
           {cat.name}
         </div>
       </>

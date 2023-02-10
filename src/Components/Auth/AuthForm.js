@@ -1,6 +1,7 @@
 import { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
+import * as CONFIG from "../../utils/Configuration";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -17,8 +18,8 @@ const AuthForm = () => {
     const enteredPassword = passwordInputRef.current.value;
     console.log(enteredEmail);
     console.log(enteredPassword);
-    //const url = "http://localhost:3001/api/v1/useLogin";
-    const url = "https://posapi.pinga.us/api/v1/useLogin";
+    //const url = "http://localhost:5000/api/v1/dashboard/useLogin";
+    const url = CONFIG.URL + "/dashboard/useLogin";
     setIsLoading(true);
     fetch(url, {
       method: "POST",
@@ -60,7 +61,8 @@ const AuthForm = () => {
 
   return (
     // <div className="d-flex align-items-center justify-content-center">
-    <div className="col-md-4 offset-md-4 shadow p-3 mb-5 bg-body rounded">
+
+    <div className="col-md-4 offset-md-4  p-3 mb-5 bg-body rounded">
       <form>
         {/* <!-- Email input --> */}
         <label className="form-label" htmlFor="email">

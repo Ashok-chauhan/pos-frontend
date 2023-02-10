@@ -1,43 +1,91 @@
 import React, { useState, useEffect, useCallback } from "react";
 import postData from "../utils/postData";
+import * as CONFIG from "../utils/Configuration";
 import "../Datepicker.css";
+import PaymetMethodGraph from "../Components/PaymentMethodGraph";
 import CategoryItems from "../Components/CategoryItems";
 
 const Dashboard = () => {
-  const dateObj = new Date();
-  let todayDate =
-    dateObj.getFullYear() +
-    "-" +
-    dateObj.getMonth() +
-    1 +
-    "-" +
-    dateObj.getDate();
+  //const dateObj = new Date();
+  let todayDate = new Date().toJSON().slice(0, 10);
+  // let todayDate =
+  //   dateObj.getFullYear() +
+  //   "-" +
+  //   parseInt(dateObj.getMonth() + 1) +
+  //   "-" +
 
-  //const [category, setCategory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   //const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [pickdate, setpickDate] = useState(todayDate);
   const [sale, setSale] = useState("");
+  const [paymentMode, setPaymentMode] = useState("");
+  const [paymentModeCash, setPaymentModeCash] = useState("");
+  const [paymentModeOther, setPaymentModeOther] = useState("");
   const date = { date: "2023-01-03" };
 
   useEffect(() => {
     getDashboardData();
+    getPaymentMode();
+    getPaymentModeCash();
+    getPaymentModeOther();
   }, [pickdate]);
 
   const pickDateHandler = (event) => {
     event.preventDefault();
     setpickDate(event.target.value);
   };
+  const getPaymentMode = () => {
+    const card = {
+      date: todayDate,
+      mode: "card",
+    };
+
+    postData(CONFIG.URL + "/dashboard/paymentMode", card)
+      .then((data) => {
+        setPaymentMode(data.paymentMode[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const getPaymentModeCash = () => {
+    const cash = {
+      date: todayDate,
+      mode: "cash",
+    };
+    postData(CONFIG.URL + "/dashboard/paymentMode", cash)
+      .then((data) => {
+        //console.log(data.paymentMode[0]);
+        setPaymentModeCash(data.paymentMode[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const getPaymentModeOther = () => {
+    const other = {
+      date: todayDate,
+      mode: "other",
+    };
+    postData(CONFIG.URL + "/dashboard/paymentMode", other)
+      .then((data) => {
+        setPaymentModeOther(data.paymentMode[0]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const saleObj = {};
   const getDashboardData = () => {
     setIsLoading(true);
-    postData("https://posapi.pinga.us/api/v1/salebyDate", {
+    postData(CONFIG.URL + "/salebyDate", {
       date: pickdate,
     }).then((data) => {
-      //setSale(data);
-      console.log(data);
       setIsLoading(false);
+
       saleObj.average_sale = data.toDayEarning.average_sale
         ? data.toDayEarning.average_sale.toFixed(2)
         : "0.00";
@@ -81,16 +129,14 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="row">
+      <div className="row p-3">
         <div className="col-md-8">
-          <div className="card shadow p-3 mb-5 bg-body rounded">
+          <div className="card  p-3 mb-5 bg-body rounded">
             <div className="card-body">
               <div className="row">
                 <div className="col-md-12">
                   {isLoading && (
-                    <p className="text-warning bg-light text-center">
-                      Sending request...
-                    </p>
+                    <span className="text-warning bg-light text-center spin"></span>
                   )}
 
                   <input
@@ -149,12 +195,23 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="col-md-4">
-          <div className="card shadow p-3 mb-5 bg-body rounded">
+          <div className="card p-3 mb-5 bg-body rounded">
             <div className="card-body">
-              This is some text within a card body.
+              <h3>Last month</h3>
             </div>
           </div>
         </div>
+      </div>
+      {/* Doughnut graph */}
+      <div className="row">
+        <div>
+          <h3>Today</h3>
+        </div>
+        <PaymetMethodGraph
+          mode={paymentMode}
+          cash={paymentModeCash}
+          other={paymentModeOther}
+        />
       </div>
     </>
   );

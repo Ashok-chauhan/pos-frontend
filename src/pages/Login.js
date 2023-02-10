@@ -4,7 +4,9 @@ const Login = () => {
   return (
     <>
       {/* <Categories /> */}
-      <AuthForm />
+      <div className="mt-5">
+        <AuthForm />
+      </div>
     </>
   );
 };

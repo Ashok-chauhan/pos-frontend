@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import postData, { getData } from "../utils/postData";
-import CategoryItems from "../Components/CategoryItems";
+import * as CONFIG from "../utils/Configuration";
 import Products from "../Components/products/Products";
-const Sell = () => {
+
+const Sales = () => {
   const [category, setCategory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingForm, setIsLoadingForm] = useState(false);
@@ -11,13 +13,12 @@ const Sell = () => {
   const [amount, setAmount] = useState("");
   const [discount, setDiscount] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [categoryName, setCategoryName] = useState("");
+  const [newCustomer, setNewCustomer] = useState(false);
   const [paymentMode, setPaymentMode] = useState("");
   const [product, setProduct] = useState([]);
 
-  //const getcat = useCallback(() => {
   const getcat = () => {
-    const url = "https://posapi.pinga.us/api/v1/dashboard/category";
+    const url = CONFIG.URL + "/dashboard/category";
     setIsLoading(true);
     fetch(url, {
       method: "GET",
@@ -54,7 +55,26 @@ const Sell = () => {
 
   const phoneChangeHandler = (event) => {
     setPhone(event.target.value);
+
+    console.log(event.target.value);
+    if (event.target.value.length >= 10) {
+      setIsLoadingForm(true);
+      postData(CONFIG.URL + "/customer/check", {
+        phone: event.target.value,
+      }).then((data) => {
+        setIsLoadingForm(false);
+        //console.log(data); // JSON data parsed by `data.json()` call
+        if (data.success) {
+          setName(data.customer.name);
+          setNewCustomer(false);
+        } else {
+          setName("");
+          setNewCustomer(true);
+        }
+      });
+    }
   };
+
   const nameChangeHandler = (event) => {
     setName(event.target.value);
   };
@@ -69,30 +89,33 @@ const Sell = () => {
     setPaymentMode(event.target.value);
   };
 
+  const productName = (product) => {
+    setProduct(product);
+  };
+
   const clickHandler = (e) => {
     e.preventDefault();
 
-    //console.log(e.target.textContent);
-    setCategoryName(e.target.textContent);
+    // setCategoryName(e.target.textContent);
     setCategoryId(e.target.id);
-    console.log(categoryId);
-    e.target.className =
-      "border border-info border-2 rounded-1 pe  m-2 p-2 w-25";
+
+    // e.target.className =
+    // "border border-info border-2 rounded-1 pe  m-2 p-2 w-25";
   };
-  console.log(product);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(paymentMode + ">>>>>>>>>");
+
     const soldItem = {
-      product_name: categoryName,
+      product_name: product, //categoryName,
       customer_phone: phone,
       amount: amount,
       discount: discount,
       payment_mode: paymentMode,
     };
+    console.log(soldItem);
     setIsLoadingForm(true);
-    postData("https://posapi.pinga.us/api/v1/bill", soldItem).then((data) => {
+    postData(CONFIG.URL + "/bill", soldItem).then((data) => {
       setIsLoadingForm(false);
       console.log(data); // JSON data parsed by `data.json()` call
     });
@@ -101,6 +124,7 @@ const Sell = () => {
     setAmount("");
     setDiscount("");
     setPaymentMode("");
+    setProduct("");
 
     console.log("Phone ## " + phone);
   };
@@ -114,7 +138,7 @@ const Sell = () => {
       <>
         {!categoryId.includes(cat._id) && (
           <div
-            className="bg-light border border-secondary rounded-1 m-2 p-2 w-25 "
+            className="bg-light border border-secondary rounded-1 m-2 p-2 category "
             role="button"
             key={cat._id}
             id={cat._id}
@@ -125,7 +149,7 @@ const Sell = () => {
         )}
         {categoryId.includes(cat._id) && (
           <div
-            className="border border-info border-2 rounded-1 m-2 p-2 w-25 "
+            className="border bg-success text-white rounded-1 m-2 p-2 category "
             role="button"
             id={cat._id}
             key={cat._id}
@@ -133,45 +157,6 @@ const Sell = () => {
           >
             {cat.name}
           </div>
-        )}
-      </>
-    );
-  });
-
-  const catgoryList = category.map((cat) => {
-    return (
-      <>
-        {!categoryId.includes(cat._id) && (
-          <>
-            {/* <div
-              className="bg-light border border-secondary rounded-1 m-2 p-2 w-25 "
-              role="button"
-              key={cat._id}
-              id={cat._id}
-              onClick={clickHandler}
-            >
-              {cat.name}
-            </div> */}
-            <li key={cat._id} id={cat._id}>
-              {cat.name}
-            </li>
-          </>
-        )}
-        {categoryId.includes(cat._id) && (
-          // <div
-          //   className="border border-info border-2 rounded-1 m-2 p-2 w-25 "
-          //   role="button"
-          //   id={cat._id}
-          //   key={cat._id}
-          //   onClick={clickHandler}
-          // >
-          //   {cat.name}
-          // </div>
-
-          <li key={cat._id} id={cat._id}>
-            {cat.name}
-            {cat._id}
-          </li>
         )}
       </>
     );
@@ -183,24 +168,17 @@ const Sell = () => {
         <div className="row">
           <div className="col-sm-12 col-md-8 p-3">
             {/* <form> */}
-            <div className="card shadow p-3 mb-5 bg-body rounded">
+            <div className="card  p-3 mb-5 ">
               <h5 className="card-header">Categories</h5>
 
               <div className="card-body">
                 <div className="row">
-                  {/* <div className="col-md-4">
-                    <div>
-                      <ul className="list-group">{catgoryList}</ul>
-                    </div>
-                  </div> */}
                   <div className="col-md-4">
                     {/* <CategoryItems onSave={categoryData} /> */}
-                    <h5 className="text-center card-header">Items</h5>
+
                     <div className="col d-flex flex-wrap justify-content-between">
                       {isLoading && (
-                        <p className="text-warning bg-light text-center">
-                          Sending request...
-                        </p>
+                        <span className="text-warning bg-light text-center spin"></span>
                       )}
                       {catList}
                     </div>
@@ -208,8 +186,12 @@ const Sell = () => {
 
                   <div className="col-md-8">
                     <div>
-                      {/* <ul className="list-group">{catgoryList}</ul> */}
-                      {/* <Products categoryId={categoryId} /> */}
+                      <h5 className="bg-light text-center">Products</h5>
+
+                      <Products
+                        categoryId={categoryId}
+                        productName={productName}
+                      />
                     </div>
                   </div>
                 </div>
@@ -218,34 +200,45 @@ const Sell = () => {
           </div>
 
           <div className="col-sm-12 col-md-4 p-3">
-            <div className="card shadow p-3 mb-5 bg-body rounded">
+            <div className="card p-3 mb-5 ">
               <h5 className="card-header">POS</h5>
               {isLoadingForm && (
-                <p className="text-warning bg-light text-center">
-                  Sending request...
-                </p>
+                <span className="text-warning bg-light text-center spin"></span>
               )}
               <div className="card-body">
                 <div className="mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control border border-warning"
                     id="phone"
                     name="phone"
                     value={phone}
                     placeholder="Phone No."
                     aria-describedby="phone"
+                    required
                     onChange={phoneChangeHandler}
+                    //onComplete={phoneChangeHandler}
                   />
                 </div>
+                {newCustomer && (
+                  <Link to="/customer/add">
+                    <button
+                      type="button"
+                      className="btn btn-outline-warning btn-sm"
+                    >
+                      No Record: Add Customer
+                    </button>
+                  </Link>
+                )}
                 <div className="mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control border border-warning"
                     id="name"
                     name="name"
                     value={name}
                     placeholder="Name"
+                    required
                     onChange={nameChangeHandler}
                   />
                 </div>
@@ -253,11 +246,12 @@ const Sell = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control border border-warning"
                     id="amount"
                     name="amount"
                     value={amount}
                     placeholder="Amount"
+                    required
                     onChange={amountChangeHandler}
                   />
                 </div>
@@ -273,7 +267,9 @@ const Sell = () => {
                     onChange={discountChangeHandler}
                   />
                 </div>
-                <h5>Payment mode</h5>
+                <h5>
+                  Payment mode <span className="text-warning">*</span>
+                </h5>
                 <div className="form-check form-check-inline">
                   <input
                     className="form-check-input"
@@ -322,7 +318,7 @@ const Sell = () => {
                   <button
                     type="submit"
                     //onClick={clickHandler}
-                    className="btn btn-light btn-outline-secondary"
+                    className="btn  btn-secondary"
                   >
                     Submit
                   </button>
@@ -338,4 +334,4 @@ const Sell = () => {
   );
 };
 
-export default Sell;
+export default Sales;
